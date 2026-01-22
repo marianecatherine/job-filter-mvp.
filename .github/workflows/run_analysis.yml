@@ -1,5 +1,5 @@
 name: Run Job Analysis
-on: [workflow_dispatch] # This lets you run it manually with a button
+on: [workflow_dispatch]
 
 jobs:
   analyze:
@@ -11,7 +11,8 @@ jobs:
         with:
           python-version: '3.9'
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install openai==0.28
       - name: Run Script
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
