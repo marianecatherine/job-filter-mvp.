@@ -1,27 +1,29 @@
 import os
-import openai
+import google.generativeai as genai
 
-# Use Environment Variables for security
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# We are using the same secret name to save time
+api_key = os.getenv("OPENAI_API_KEY")
+genai.configure(api_key=api_key)
 
 def analyze_job(description):
-    # System Prompt based on your Validation Insights
-    system_prompt = (
-        "You are a Job Application Risk Analyzer. Identify 'Experience Creep' "
-        "(requirements > 2 years for junior roles) and 'Senior Language' "
-        "like 'proven track record'. Provide a Risk Score (1-10) and explain why."
-    )
+    model = genai.GenerativeModel('gemini-1.5-flash')
     
-    response = openai.ChatCompletion.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": f"Analyze this job: {description}"}
-        ]
-    )
-    return response.choices[0].message.content
+    prompt = f"""
+    You are a Job Application Risk Analyzer. 
+    Analyze the following job description for 'Experience Creep' 
+    (requirements > 2 years for junior roles) and 'Senior Language'.
+    
+    Provide a Risk Score (1-10) and a brief explanation of the red flags.
+    
+    Job Description:
+    {description}
+    """
+    
+    response = model.generate_content(prompt)
+    return response.text
 
-# For tonight's test, we paste a description here
 if __name__ == "__main__":
-    test_job = "Paste a real job description from your 305 applications here"
+    # Test it with one of your 305 applications!
+    test_job = "Software Engineer - Entry Level. 5+ years of experience required."
     print(analyze_job(test_job))
+
