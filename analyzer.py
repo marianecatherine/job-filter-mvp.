@@ -1,12 +1,13 @@
 import os
 import google.generativeai as genai
 
-# We are using the same secret name to save time
+# Pulling the key from your GitHub Secret
 api_key = os.getenv("OPENAI_API_KEY")
 genai.configure(api_key=api_key)
 
 def analyze_job(description):
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # Updated model string to ensure compatibility
+    model = genai.GenerativeModel('models/gemini-1.5-flash')
     
     prompt = f"""
     You are a Job Application Risk Analyzer. 
@@ -23,7 +24,7 @@ def analyze_job(description):
     return response.text
 
 if __name__ == "__main__":
-    # Test it with one of your 305 applications!
     test_job = "Software Engineer - Entry Level. 5+ years of experience required."
     print(analyze_job(test_job))
+
 
